@@ -9,8 +9,8 @@ class Article (
     @Id
     var id: Long = 0,
     var title: String,
-    var body: String,
-    var authorId: Long
+    var body: String?= null,
+    var authorId: Long?= null
 ): BaseEntity() {
 
     override fun equals(other: Any?): Boolean {
