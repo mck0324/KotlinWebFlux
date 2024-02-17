@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS TB_ARTICLE(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200),
     body VARCHAR(2000),
-    autor_id BIGINT,
+    author_id BIGINT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
