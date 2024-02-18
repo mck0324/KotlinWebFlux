@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.reactive.TransactionalOperator
+import reactor.core.publisher.Mono
 
 @SpringBootTest
 class ArticleServiceTest(
     @Autowired private val service: ArticleService,
     @Autowired private val repository: ArticleRepository,
+    @Autowired private val rxtx: TransactionalOperator,
+
 ) {
 
     @Test
@@ -32,12 +36,22 @@ class ArticleServiceTest(
 
     @Test
     fun getAll() {
-        service.create(ReqCreate("title1",body = "body1")).block()!!
-        service.create(ReqCreate("title2",body = "body2")).block()!!
-        service.create(ReqCreate("title matched",body = "body3")).block()!!
-        assertEquals(3,service.getAll().collectList().block()!!.size)
-
-        assertEquals(1,service.getAll("matched").collectList().block()!!.size )
+        rxtx.execute { tx ->
+            tx.setRollbackOnly()
+            Mono.zip(
+                service.create(ReqCreate("title1",body = "body1")),
+                service.create(ReqCreate("title2",body = "body2")),
+                service.create(ReqCreate("title matched",body = "body3")),
+            ).flatMap {
+                service.getAll().collectList().doOnNext {
+                    assertEquals(3, it.size)
+                }
+            }.flatMap {
+                service.getAll("matched").collectList().doOnNext {
+                    assertEquals(1,it.size)
+                }
+            }
+        }.subscribe()
     }
 
     @Test
