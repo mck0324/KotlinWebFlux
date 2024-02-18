@@ -3,6 +3,7 @@ package com.example.webfluxreactor.service
 import com.example.webfluxreactor.repository.ArticleRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -24,6 +25,8 @@ class ArticleServiceTest(
         Assertions.assertEquals(article.title, readArticle.title)
         Assertions.assertEquals(article.body, readArticle.body)
         Assertions.assertEquals(article.authorId, readArticle.authorId)
+        assertNotNull(readArticle.createdAt)
+        assertNotNull(readArticle.updatedAt)
 
     }
 

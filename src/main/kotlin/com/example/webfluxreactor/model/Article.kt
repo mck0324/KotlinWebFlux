@@ -1,6 +1,8 @@
 package com.example.webfluxreactor.model
 
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 
@@ -29,7 +31,9 @@ class Article (
 
 }
 open class BaseEntity (
+    @CreatedDate
     var createdAt: LocalDateTime? = null,
+    @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
 ) {
     override fun toString(): String {
